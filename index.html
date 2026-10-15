@@ -13,12 +13,10 @@
       --rose-dark: #96304e;
       --ink: #392b35;
       --muted: #75636d;
-      --paper: rgba(255, 255, 255, .88);
+      --paper: rgba(255, 255, 255, .9);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -35,7 +33,9 @@
       overflow-x: hidden;
     }
 
-    /* Floating background charms */
+    button, a { font: inherit; }
+
+    /* Floating birthday charms */
     .confetti {
       position: fixed;
       inset: 0;
@@ -86,12 +86,8 @@
     .confetti span:nth-child(30) { left: 72%; animation-duration: 15s; animation-delay: -13s; }
 
     @keyframes fall {
-      0% {
-        transform: translateY(-5vh) rotate(0deg);
-      }
-      100% {
-        transform: translateY(115vh) rotate(360deg);
-      }
+      from { transform: translateY(-5vh) rotate(0deg); }
+      to { transform: translateY(115vh) rotate(360deg); }
     }
 
     main {
@@ -156,12 +152,126 @@
       margin: 25px auto;
     }
 
+    /* Countdown */
+    .countdown {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin: 22px auto 8px;
+      max-width: 440px;
+    }
+
+    .countdown-unit {
+      padding: 12px 6px;
+      border: 1px solid #f0cfda;
+      border-radius: 14px;
+      background: rgba(255, 244, 247, .9);
+    }
+
+    .countdown-value {
+      display: block;
+      color: var(--rose-dark);
+      font-size: clamp(1.4rem, 5vw, 2rem);
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.2;
+    }
+
+    .countdown-label {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: .72rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .countdown-note {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.6;
+    }
+
+    /* Business clue */
+    .clue {
+      margin: 28px auto 20px;
+      max-width: 490px;
+      padding: 20px 18px;
+      border: 1px dashed #e5b1c1;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #fff6f8, #fffaf6);
+    }
+
+    .clue-icon {
+      font-size: 27px;
+      margin-bottom: 7px;
+    }
+
+    .clue h2 {
+      margin: 0 0 9px;
+      color: var(--rose-dark);
+      font: 700 1.35rem Georgia, "Times New Roman", serif;
+    }
+
+    .clue p {
+      margin: 0;
+      color: #75636d;
+      font-size: .96rem;
+      line-height: 1.8;
+    }
+
+    .clue em {
+      color: #96304e;
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    .clue.is-dismissed {
+      display: none;
+    }
+
+    /* Curtain reveal */
+    .reveal-stage {
+      position: relative;
+      min-height: 370px;
+      margin-top: 20px;
+      border-radius: 24px;
+      isolation: isolate;
+    }
+
     .app-card {
+      position: absolute;
+      inset: 0;
       padding: 22px;
       border-radius: 22px;
       text-align: left;
       background: linear-gradient(135deg, #fff4f7, #fffaf6);
       border: 1px solid #f3d6df;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px) scale(.985);
+      transition:
+        opacity .8s ease .35s,
+        transform .8s ease .35s,
+        visibility 0s linear 1.15s;
+      z-index: 1;
+    }
+
+    .reveal-stage.is-unlocked {
+      min-height: 0;
+    }
+
+    .reveal-stage.is-unlocked .app-card {
+      position: relative;
+      inset: auto;
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+      transition:
+        opacity .8s ease .25s,
+        transform .8s ease .25s,
+        visibility 0s;
     }
 
     .app-heading {
@@ -184,15 +294,17 @@
       box-shadow: 0 8px 18px rgba(168, 53, 89, .2);
     }
 
-    h2 {
+    .app-card h2 {
       margin: 0;
       font-size: 1.18rem;
+      color: var(--ink);
     }
 
     .app-caption {
       margin: 4px 0 0;
       color: var(--muted);
       font-size: .9rem;
+      line-height: 1.6;
     }
 
     .download {
@@ -203,6 +315,7 @@
       width: 100%;
       padding: 15px 18px;
       margin-top: 18px;
+      border: 0;
       border-radius: 14px;
       background: var(--rose);
       color: #fff;
@@ -218,9 +331,23 @@
       transform: translateY(-2px);
     }
 
-    .download:focus-visible {
+    .download:focus-visible,
+    .dev-download:focus-visible,
+    .easter-trigger:focus-visible {
       outline: 3px solid #e9a0b5;
       outline-offset: 3px;
+    }
+
+    .download.is-locked {
+      background: #b9a7ae;
+      box-shadow: none;
+      cursor: not-allowed;
+      opacity: .8;
+    }
+
+    .download.is-locked:hover {
+      background: #b9a7ae;
+      transform: none;
     }
 
     .requirements {
@@ -230,8 +357,141 @@
       line-height: 1.65;
     }
 
-    .requirements strong {
-      color: #55434d;
+    .requirements strong { color: #55434d; }
+
+    .download-status {
+      margin: 10px 0 0;
+      color: var(--rose-dark);
+      font-size: .88rem;
+      font-weight: 650;
+      text-align: center;
+    }
+
+    .curtains {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      overflow: hidden;
+      border-radius: 24px;
+      z-index: 5;
+      pointer-events: auto;
+      background: #70233f;
+      box-shadow: 0 14px 35px rgba(95, 30, 57, .2);
+      transition: box-shadow .7s ease;
+    }
+
+    .curtain {
+      position: relative;
+      width: 50%;
+      height: 100%;
+      flex: 0 0 50%;
+      overflow: hidden;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(255,255,255,.035) 0,
+          rgba(255,255,255,.035) 5%,
+          rgba(53,8,29,.17) 10%,
+          rgba(255,255,255,.07) 15%,
+          transparent 21%
+        ),
+        linear-gradient(90deg, #7c2647, #bd476e 35%, #8d2d50 72%, #67213e);
+      box-shadow: inset -12px 0 20px rgba(44, 8, 24, .17);
+      transition: transform 1.65s cubic-bezier(.75, 0, .2, 1);
+    }
+
+    .curtain.right {
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(255,255,255,.07) 0,
+          rgba(255,255,255,.07) 5%,
+          rgba(53,8,29,.17) 10%,
+          rgba(255,255,255,.035) 15%,
+          transparent 21%
+        ),
+        linear-gradient(90deg, #67213e, #8d2d50 28%, #bd476e 70%, #7c2647);
+      box-shadow: inset 12px 0 20px rgba(44, 8, 24, .17);
+    }
+
+    .curtain::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 230, 239, .12) 22%,
+        transparent 40%,
+        rgba(39, 5, 20, .12) 63%,
+        transparent 82%
+      );
+    }
+
+    .curtain-ornament {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: rgba(255, 238, 245, .85);
+      font-size: clamp(25px, 5vw, 42px);
+      text-shadow: 0 3px 12px rgba(50, 4, 24, .25);
+      white-space: nowrap;
+    }
+
+    .curtain-label {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 28%;
+      color: #fff3f7;
+      text-align: center;
+      font: italic clamp(1rem, 3vw, 1.3rem) Georgia, "Times New Roman", serif;
+      letter-spacing: .04em;
+      padding: 0 8px;
+    }
+
+    .curtain-ribbon {
+      position: absolute;
+      bottom: 24%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      height: 48px;
+      border: 2px solid rgba(255, 232, 241, .65);
+      border-radius: 50% 50% 45% 45%;
+      opacity: .85;
+    }
+
+    .curtain-ribbon::after {
+      content: "♡";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #fff0f6;
+      font-size: 22px;
+    }
+
+    .reveal-stage.is-unlocked .curtains {
+      pointer-events: none;
+      box-shadow: none;
+      background: transparent;
+    }
+
+    .reveal-stage.is-unlocked .curtain.left {
+      transform: translateX(-105%);
+    }
+
+    .reveal-stage.is-unlocked .curtain.right {
+      transform: translateX(105%);
+    }
+
+    .reveal-stage.is-unlocked .curtain-ornament,
+    .reveal-stage.is-unlocked .curtain-label,
+    .reveal-stage.is-unlocked .curtain-ribbon {
+      opacity: 0;
+      transition: opacity .25s ease;
     }
 
     .footer {
@@ -240,6 +500,7 @@
       color: #927f89;
     }
 
+    /* Always-visible, small development APK button */
     .dev-download {
       display: inline-block;
       margin-top: 18px;
@@ -264,20 +525,95 @@
       outline-offset: 3px;
     }
 
+    /* Hidden Easter egg */
+    .easter-area {
+      display: flex;
+      justify-content: center;
+      margin-top: 15px;
+    }
+
+    .easter-trigger {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: #d9b7c4;
+      opacity: .28;
+      cursor: pointer;
+      font-size: 17px;
+      transition: opacity .25s ease, transform .25s ease, color .25s ease;
+    }
+
+    .easter-trigger:hover,
+    .easter-trigger:focus-visible {
+      opacity: 1;
+      color: var(--rose);
+      transform: rotate(45deg) scale(1.15);
+    }
+
+    .easter-message {
+      display: none;
+      max-width: 430px;
+      margin: 12px auto 0;
+      padding: 18px;
+      border: 1px solid #f0d1dc;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #fff1f6, #fffaf6);
+      color: var(--rose-dark);
+      font: italic 1.15rem/1.8 Georgia, "Times New Roman", serif;
+      animation: fadeIn .8s ease both;
+    }
+
+    .easter-message.visible { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .burst {
+      position: fixed;
+      z-index: 10;
+      pointer-events: none;
+      font-size: 22px;
+      animation: burstAway 1.8s ease-out forwards;
+    }
+
+    @keyframes burstAway {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(.6) rotate(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--dx), var(--dy)) scale(1.4) rotate(180deg);
+      }
+    }
+
+    @media (max-width: 380px) {
+      .countdown { gap: 5px; }
+      .countdown-unit { padding: 10px 3px; }
+      .countdown-label { font-size: .65rem; }
+      .app-card { padding: 17px; }
+      .reveal-stage { min-height: 400px; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
+      *, *::before, *::after {
         animation-duration: .01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
       }
     }
   </style>
 </head>
 
 <body>
-  <!-- 30 floating birthday charms -->
+  <!-- Floating birthday charms -->
   <div class="confetti" aria-hidden="true">
     <span>♡</span><span>✦</span><span>🌸</span><span>💗</span><span>✧</span>
     <span>🎀</span><span>✨</span><span>♡</span><span>🦋</span><span>🌷</span>
@@ -300,6 +636,36 @@
 
     <div class="divider"></div>
 
+    <section class="countdown-section"
+             aria-label="Countdown to October 21, 2026">
+      <p class="subtitle" id="countdown-heading">
+        A little surprise unlocks on October 21, 2026
+      </p>
+
+      <div class="countdown" role="timer" aria-live="off">
+        <div class="countdown-unit">
+          <span class="countdown-value" id="countdown-days">--</span>
+          <span class="countdown-label">Days</span>
+        </div>
+        <div class="countdown-unit">
+          <span class="countdown-value" id="countdown-hours">--</span>
+          <span class="countdown-label">Hours</span>
+        </div>
+        <div class="countdown-unit">
+          <span class="countdown-value" id="countdown-minutes">--</span>
+          <span class="countdown-label">Minutes</span>
+        </div>
+        <div class="countdown-unit">
+          <span class="countdown-value" id="countdown-seconds">--</span>
+          <span class="countdown-label">Seconds</span>
+        </div>
+      </div>
+
+      <p class="countdown-note" id="countdown-note">
+        Some dreams deserve a little surprise of their own. ♡
+      </p>
+    </section>
+
     <p class="message">
       May the year ahead bring you peace, exciting new beginnings, and countless
       reasons to smile. I hope life is kind to you and that you find happiness
@@ -308,40 +674,261 @@
       <span aria-hidden="true">✨ 💗 ✨</span>
     </p>
 
-    <section class="app-card" aria-labelledby="app-title">
-      <div class="app-heading">
-        <div class="app-icon" aria-hidden="true">👗</div>
-        <div>
-          <h2 id="app-title">A little something for you: Closet</h2>
-          <p class="app-caption">Your personal wardrobe companion</p>
+    <!-- Business clue shown before the reveal -->
+    <section class="clue" id="business-clue" aria-label="A little clue">
+      <div class="clue-icon" aria-hidden="true">🧵 ✨</div>
+      <h2>A little clue, until then…</h2>
+      <p>
+        Remember that idea you once had — the one that could turn your love
+        for clothing and styling into something of your own?
+        <br><br>
+        Maybe this little surprise will help you take
+        <em>the first step towards building it.</em>
+        <br><br>
+        Think less about what's hanging in a wardrobe…
+        and more about what you could build around it. ♡
+      </p>
+    </section>
+
+    <!-- Closet card hidden behind curtains until countdown reaches zero -->
+    <section class="reveal-stage" id="reveal-stage"
+             aria-label="Your birthday surprise">
+
+      <section class="app-card" id="app-card"
+               aria-labelledby="app-title" inert>
+        <div class="app-heading">
+          <div class="app-icon" aria-hidden="true">👗</div>
+          <div>
+            <h2 id="app-title">A little something for you: Closet</h2>
+            <p class="app-caption">Your personal wardrobe companion</p>
+          </div>
+        </div>
+
+        <p class="app-caption">
+          A small beginning for a big idea. Here's something to help you
+          explore, experiment, and build on your vision.
+        </p>
+
+        <a class="download is-locked" id="closet-download"
+           href="Closet.apk" download="Closet.apk"
+           aria-disabled="true" tabindex="-1">
+          <span aria-hidden="true">⬇</span>
+          Download Closet for Android
+        </a>
+
+        <p class="download-status" id="download-status">
+          Waiting for your birthday surprise to unfold…
+        </p>
+
+        <p class="requirements">
+          <strong>Android only:</strong> This app requires an Android phone and
+          is installed using an APK file. After downloading, open the APK and
+          follow the on-screen prompts. You may need to allow
+          “Install unknown apps” for your browser or file manager.
+          Only install it if you trust the source.
+        </p>
+      </section>
+
+      <div class="curtains" id="curtains" aria-hidden="true">
+        <div class="curtain left">
+          <span class="curtain-label">A little something</span>
+          <span class="curtain-ornament">✧</span>
+          <span class="curtain-ribbon"></span>
+        </div>
+        <div class="curtain right">
+          <span class="curtain-label">just for you ♡</span>
+          <span class="curtain-ornament">✧</span>
+          <span class="curtain-ribbon"></span>
         </div>
       </div>
-
-      <p class="app-caption">Tap below to download the Android app.</p>
-
-      <a class="download" href="Closet.apk" download="Closet.apk">
-        <span aria-hidden="true">⬇</span>
-        Download Closet for Android
-      </a>
-
-      <p class="requirements">
-        <strong>Android only:</strong> This app requires an Android phone and is
-        installed using an APK file. After downloading, open the APK and follow
-        the on-screen prompts. You may need to allow “Install unknown apps” for
-        the browser or file manager you use. Only install it if you trust the
-        source.
-      </p>
     </section>
 
     <p class="footer">Made with care ♡</p>
 
-    <a
-      class="dev-download"
-      href="app-debug.apk"
-      download="app-debug.apk"
-    >
+    <!-- Always visible: testing APK download -->
+    <a class="dev-download"
+       id="dev-download"
+       href="app-debug.apk"
+       download="app-debug.apk">
       In Dev App ↓
     </a>
+
+    <!-- Hidden Easter egg -->
+    <div class="easter-area">
+      <button class="easter-trigger"
+              id="easter-trigger"
+              type="button"
+              aria-label="A tiny hidden sparkle"
+              aria-expanded="false"
+              aria-controls="easter-message"
+              title="✧">
+        ✧
+      </button>
+    </div>
+
+    <p class="easter-message"
+       id="easter-message"
+       role="status"
+       aria-live="polite">
+      hope you are always achieve what you aspire and hope you keep smiling 💗
+    </p>
   </main>
+
+  <script>
+    (() => {
+      // Midnight at the beginning of October 21, 2026, India Standard Time.
+      const unlockAt =
+        new Date("2026-10-21T00:00:00+05:30").getTime();
+
+      const fields = {
+        days: document.getElementById("countdown-days"),
+        hours: document.getElementById("countdown-hours"),
+        minutes: document.getElementById("countdown-minutes"),
+        seconds: document.getElementById("countdown-seconds")
+      };
+
+      const stage = document.getElementById("reveal-stage");
+      const clue = document.getElementById("business-clue");
+      const downloadLink = document.getElementById("closet-download");
+      const downloadStatus = document.getElementById("download-status");
+      const countdownNote = document.getElementById("countdown-note");
+      const countdownHeading = document.getElementById("countdown-heading");
+      const appCard = document.getElementById("app-card");
+
+      let intervalId = null;
+      let unlocked = false;
+
+      function launchConfetti() {
+        const symbols = ["💗", "✨", "🌸", "♡", "🎀", "✦"];
+
+        const reduceMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches;
+
+        if (reduceMotion) return;
+
+        for (let i = 0; i < 24; i++) {
+          const piece = document.createElement("span");
+          piece.className = "burst";
+          piece.textContent = symbols[i % symbols.length];
+          piece.style.left = `${10 + Math.random() * 80}%`;
+          piece.style.top = `${25 + Math.random() * 50}%`;
+          piece.style.setProperty(
+            "--dx",
+            `${(Math.random() - .5) * 260}px`
+          );
+          piece.style.setProperty(
+            "--dy",
+            `${(Math.random() - .5) * 260}px`
+          );
+
+          document.body.appendChild(piece);
+          piece.addEventListener("animationend", () => piece.remove());
+        }
+      }
+
+      function unlockSurprise() {
+        if (unlocked) return;
+        unlocked = true;
+
+        Object.values(fields).forEach(field => {
+          field.textContent = "00";
+        });
+
+        // Open the curtains and reveal the Closet card.
+        document.body.classList.add("is-unlocked");
+        stage.classList.add("is-unlocked");
+        clue.classList.add("is-dismissed");
+
+        // Enable the main download only after the countdown ends.
+        downloadLink.classList.remove("is-locked");
+        downloadLink.removeAttribute("aria-disabled");
+        downloadLink.removeAttribute("tabindex");
+        downloadLink.href = "Closet.apk";
+
+        downloadStatus.textContent =
+          "The surprise is yours. Happy birthday, Yashi! ♡";
+
+        countdownHeading.textContent = "Your surprise is here! ♡";
+        countdownNote.textContent =
+          "A little idea, a little beginning, and a whole lot of possibility.";
+
+        appCard.removeAttribute("inert");
+
+        launchConfetti();
+
+        if (intervalId !== null) {
+          clearInterval(intervalId);
+          intervalId = null;
+        }
+      }
+
+      function updateCountdown() {
+        const remaining = unlockAt - Date.now();
+
+        if (remaining <= 0) {
+          unlockSurprise();
+          return;
+        }
+
+        const totalSeconds = Math.floor(remaining / 1000);
+
+        fields.days.textContent =
+          String(Math.floor(totalSeconds / 86400)).padStart(2, "0");
+
+        fields.hours.textContent =
+          String(Math.floor((totalSeconds % 86400) / 3600)).padStart(2, "0");
+
+        fields.minutes.textContent =
+          String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+
+        fields.seconds.textContent =
+          String(totalSeconds % 60).padStart(2, "0");
+      }
+
+      // Prevent access to the main download before the unlock time.
+      downloadLink.addEventListener("click", event => {
+        if (Date.now() < unlockAt || !unlocked) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      });
+
+      // The small In Dev App button is intentionally never locked.
+      // It downloads app-debug.apk whenever the visitor clicks it.
+
+      // Reveal or hide the hidden birthday message.
+      const easterTrigger =
+        document.getElementById("easter-trigger");
+      const easterMessage =
+        document.getElementById("easter-message");
+
+      easterTrigger.addEventListener("click", () => {
+        const isVisible =
+          easterMessage.classList.toggle("visible");
+
+        easterTrigger.setAttribute(
+          "aria-expanded",
+          String(isVisible)
+        );
+
+        if (isVisible) {
+          easterMessage.scrollIntoView({
+            behavior: window.matchMedia(
+              "(prefers-reduced-motion: reduce)"
+            ).matches ? "auto" : "smooth",
+            block: "nearest"
+          });
+        }
+      });
+
+      // Start immediately. Visitors arriving after midnight see the reveal.
+      updateCountdown();
+
+      if (!unlocked) {
+        intervalId = setInterval(updateCountdown, 1000);
+      }
+    })();
+  </script>
 </body>
 </html>
